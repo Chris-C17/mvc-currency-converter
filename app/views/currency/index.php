@@ -1,20 +1,6 @@
-HOMEPAGE
-<h1><?php echo $data['title']; ?></h1>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Currency Converter</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<?php require APPROOT . "/views/inc/header.php"; ?>
 
-</head>
-<body>
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="index.php">Simple Currency Converter</a>
-        </div>
-    </div>
-</nav>
+
     <div class="container">
         <!-- Using action to submit the data ... currency controller? -->
         <form method="post" action="<?php echo URLROOT; ?>/?url=Currency/converter">
@@ -47,5 +33,5 @@ HOMEPAGE
             <button type="submit" name="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
-</body>
-</html>
+
+<?php require APPROOT . "/views/inc/footer.php"; ?>

@@ -19,7 +19,7 @@ class CurrencyController extends BaseController
     public function index()
     {
         # Using a pages directory in view so need to load pages/index
-        $this->view('index', ['title' => 'Welcome']);
+        $this->view('currency/index', ['title' => 'Welcome']);
     }
 
     # Remember .htaccess isn't working so need awkward url with /public/?url=
@@ -44,6 +44,21 @@ class CurrencyController extends BaseController
         $total = $rate * $amount;
         $total_format = number_format($total, 2, '.', ',');
         echo $amount . " " . $fromCurrency . ' = ' . $total_format . " " . $toCurrency;
+
 //        return $total_format;
+    }
+
+    # Remember .htaccess isn't working so need awkward url with /mvc/public/?url=
+    # http://localhost/mvc/public/?url=pages/about/33
+//    public function about($id)
+    public function about()
+    {
+        $data = [
+            'title' => 'About Us',
+            'description' => 'Simple app for converting currencies built in a 
+            PHP MVC framework. Enjoy!',
+        ];
+        $this->view('currency/about', $data);
+//        echo "this is about in Pages and the id is ".$id;
     }
 }

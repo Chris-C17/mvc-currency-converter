@@ -19,7 +19,7 @@ class CurrencyController extends BaseController
     public function index()
     {
         # Using a pages directory in view so need to load pages/index
-        $this->view('currency/index', ['title' => 'Welcome']);
+        $this->view('currency/index');
     }
 
     # Remember .htaccess isn't working so need awkward url with /public/?url=
@@ -28,24 +28,50 @@ class CurrencyController extends BaseController
 
     public function converter()
     {
-        $fromCurrency = $_POST['fromCurrency'];
-        $toCurrency = $_POST['toCurrency'];
-        $amount = $_POST['amount'];
+        # Check for POST
+        if($_SERVER['REQUEST_METHOD'] == POST) {
+            # Process conversion
 
-        $from_Currency = urlencode($fromCurrency);
-        $to_Currency = urlencode($toCurrency);
-        $query =  "{$from_Currency}_{$to_Currency}";
+            $fromCurrency = $_POST['fromCurrency'];
+            $toCurrency = $_POST['toCurrency'];
+            $amount = $_POST['amount'];
 
-        $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
-        $obj = json_decode($json, true);
+            $from_Currency = urlencode($fromCurrency);
+            $to_Currency = urlencode($toCurrency);
+            $query = "{$from_Currency}_{$to_Currency}";
 
-        $rate = floatval($obj["$query"]);
+            $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+            $obj = json_decode($json, true);
 
-        $total = $rate * $amount;
-        $total_format = number_format($total, 2, '.', ',');
-        echo $amount . " " . $fromCurrency . ' = ' . $total_format . " " . $toCurrency;
+            $rate = floatval($obj["$query"]);
+
+            $total = $rate * $amount;
+            $total_format = number_format($total, 2, '.', ',');
+
+            $data = [
+                'fromCurrency' => $fromCurrency,
+                'toCurrency' => $toCurrency,
+                'amount' => $amount,
+                'total' => $total_format,
+            ];
+
+//            echo $amount . " " . $fromCurrency . ' = ' . $total_format . " " . $toCurrency;
+
+            # Pass data to view
+            $this->view('currency/converter', $data);
 
 //        return $total_format;
+        } else {
+            # init data so users don't need to re-enter data
+            $data = [
+                'fromCurrency' => '',
+                'toCurrency' => '',
+                'amount' => '',
+            ];
+
+            #load View (form) and pass in data
+            $this->view('currency/index', $data);
+        }
     }
 
     # Remember .htaccess isn't working so need awkward url with /mvc/public/?url=

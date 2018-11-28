@@ -27,7 +27,10 @@
         </div>
         <div>
             <label>Amount</label><br>
-            <input type="number" name="amount">
+            <!-- set value to $data['amount'] so users don't have to retype -->
+            <input type="number" name="amount" value="<?php echo $data['amount']; ?>">
+<!--            class="form-control --><?php //echo (!empty($data['amount_err'])) ? 'is-invalid' : ''; ?><!--">-->
+<!--            <span class="invalid-feedback">--><?php //echo $data['amount_err']; ?><!--</span>-->
         </div>
         <br>
         <button type="submit" name="submit" class="btn btn-primary">Submit</button>
@@ -39,7 +42,7 @@
 if($data != null)
 {
     echo $data['amount'] . " " . $data['fromCurrency'] . ' = ' .
-        $data['total'] . " " . $data['toCurrency'];
+        $data['total_format'] . " " . $data['toCurrency'];
 }
 
 

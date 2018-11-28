@@ -52,7 +52,8 @@ class CurrencyController extends BaseController
                 'fromCurrency' => $fromCurrency,
                 'toCurrency' => $toCurrency,
                 'amount' => $amount,
-                'total' => $total_format,
+                'amount_err' => '',
+                'total_format' => $total_format,
             ];
 
 //            echo $amount . " " . $fromCurrency . ' = ' . $total_format . " " . $toCurrency;
@@ -67,6 +68,7 @@ class CurrencyController extends BaseController
                 'fromCurrency' => '',
                 'toCurrency' => '',
                 'amount' => '',
+                'amount_err' => '',
             ];
 
             #load View (form) and pass in data

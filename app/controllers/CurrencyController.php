@@ -32,34 +32,46 @@ class CurrencyController extends BaseController
         if($_SERVER['REQUEST_METHOD'] == POST) {
             # Process conversion
 
-            $fromCurrency = $_POST['fromCurrency'];
-            $toCurrency = $_POST['toCurrency'];
-            $amount = $_POST['amount'];
-
-            $from_Currency = urlencode($fromCurrency);
-            $to_Currency = urlencode($toCurrency);
-            $query = "{$from_Currency}_{$to_Currency}";
-
-            $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
-            $obj = json_decode($json, true);
-
-            $rate = floatval($obj["$query"]);
-
-            $total = $rate * $amount;
-            $total_format = number_format($total, 2, '.', ',');
-
+            # Init data so users don't need to re-click everything
             $data = [
-                'fromCurrency' => $fromCurrency,
-                'toCurrency' => $toCurrency,
-                'amount' => $amount,
+                'fromCurrency' => $_POST['fromCurrency'],
+                'toCurrency' => $_POST['toCurrency'],
+                'amount' => $_POST['amount'],
                 'amount_err' => '',
-                'total_format' => $total_format,
             ];
+
+            # Ensure amount is set
+            if (empty($data['amount'])) {
+                $data['amount_err'] = 'Please enter an amount you want to convert';
+
+                # load view with errors
+                $this->view('currency/converter', $data);
+
+            } else {
+
+                $from_Currency = urlencode($data['fromCurrency']);
+                $to_Currency = urlencode($data['toCurrency']);
+                $query = "{$from_Currency}_{$to_Currency}";
+
+                $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
+                $obj = json_decode($json, true);
+
+                $rate = floatval($obj["$query"]);
+
+                $total = $rate * $data['amount'];
+                $total_format = number_format($total, 2, '.', ',');
+
+                $data['total_format'] = $total_format;
 
 //            echo $amount . " " . $fromCurrency . ' = ' . $total_format . " " . $toCurrency;
 
-            # Pass data to view
-            $this->view('currency/converter', $data);
+                # Pass data to view
+                $this->view('currency/converter', $data);
+
+            }
+//            $fromCurrency = $_POST['fromCurrency'];
+//            $toCurrency = $_POST['toCurrency'];
+//            $amount = $_POST['amount'];
 
 //        return $total_format;
         } else {
@@ -72,7 +84,7 @@ class CurrencyController extends BaseController
             ];
 
             #load View (form) and pass in data
-            $this->view('currency/index', $data);
+            $this->view('currency/converter', $data);
         }
     }
 

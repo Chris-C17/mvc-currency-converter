@@ -13,7 +13,7 @@ class CoreController
     # The controllers and methods will change as the URL changes
     # Therefore need to create a method in Core to get URL
     protected $currentController = 'CurrencyController';
-    protected $currentMethod = 'index';
+    protected $currentMethod = 'converter';
     protected $params = [];
 
     public function __construct()
@@ -64,7 +64,7 @@ class CoreController
 
             # Adding an else statement because .htaccess doesn't work and I need the
             # default controller, method and parameters to be called
-        } else { call_user_func_array(
+        } else {call_user_func_array(
             [$this->currentController, $this->currentMethod],
             $this->params);
         }

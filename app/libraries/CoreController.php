@@ -18,9 +18,6 @@ class CoreController
 
     public function __construct()
     {
-//        print "<pre>";
-//        print_r($this->getUrl());
-//        print "</pre>";
 
         $url = $this->getUrl();
 
@@ -72,9 +69,9 @@ class CoreController
     }
 
     # Note .htaccess isn't working so I need full url to public/ then ?url=
-    # http://localhost/mvc/public/index.php?url=chris/about url[0] = Chris (Controller)
-    # ad url[1] = about (method), url[2+] = params
-    # or from public http://localhost/mvc-currency-converter/public/?url=chris
+    # default is public/index.php and looks for databases there
+    # http://localhost/mvc-currency-converter/public/?url=currency/converter
+    # url[0] = Currency (Controller), url[1] = converter (method), url[2+] = params
     public function getUrl()
     {
         if(isset($_GET['url']))

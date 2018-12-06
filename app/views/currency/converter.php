@@ -44,7 +44,7 @@
                 </form>
             </div>
             <?php
-            if($data != null)
+            if($data['total_format'] != null)
             {
                 echo $data['amount'] . " " . $data['fromCurrency'] . ' = ' .
                     $data['total_format'] . " " . $data['toCurrency'];

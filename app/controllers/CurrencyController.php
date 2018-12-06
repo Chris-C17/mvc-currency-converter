@@ -11,15 +11,6 @@ class CurrencyController extends BaseController
 {
     public function __construct()
     {
-//        echo "CurrencyController loaded";
-    }
-
-    # Need an index method if setting the params outside of if statement that checks
-    # for a method in URL (array element[1])
-    public function index()
-    {
-        # Using a pages directory in view so need to load pages/index
-        $this->view('currency/index');
     }
 
     # Remember .htaccess isn't working so need awkward url with /public/?url=
@@ -32,7 +23,7 @@ class CurrencyController extends BaseController
         if($_SERVER['REQUEST_METHOD'] == POST) {
             # Process conversion
 
-            # Init data so users don't need to re-click everything
+            # Init data so users don't need to re-click anything (only works for amount)
             $data = [
                 'fromCurrency' => $_POST['fromCurrency'],
                 'toCurrency' => $_POST['toCurrency'],
@@ -42,36 +33,35 @@ class CurrencyController extends BaseController
 
             # Ensure amount is set
             if (empty($data['amount'])) {
-                $data['amount_err'] = 'Please enter an amount you want to convert';
+                $data['amount_err'] = 'Enter an amount to convert';
 
                 # load view with errors
                 $this->view('currency/converter', $data);
 
             } else {
 
-                $from_Currency = urlencode($data['fromCurrency']);
-                $to_Currency = urlencode($data['toCurrency']);
-                $query = "{$from_Currency}_{$to_Currency}";
+                # The API documentation suggests using urlencode but doesn't seem to be necessary
+//                $from_Currency = urlencode($data['fromCurrency']);
+//                $to_Currency = urlencode($data['toCurrency']);
+//                $query = "{$from_Currency}_{$to_Currency}";
+                $query = "{$data['fromCurrency']}_{$data['toCurrency']}";
 
+                # Retrieve json data from API, then decode
                 $json = file_get_contents("https://free.currencyconverterapi.com/api/v6/convert?q={$query}&compact=ultra");
                 $obj = json_decode($json, true);
 
+                # Set rate as variable
                 $rate = floatval($obj["$query"]);
 
+                # Calculate total amount, format it, then add to $data array
                 $total = $rate * $data['amount'];
                 $total_format = number_format($total, 2, '.', ',');
-
                 $data['total_format'] = $total_format;
-
-//            echo $amount . " " . $fromCurrency . ' = ' . $total_format . " " . $toCurrency;
 
                 # Pass data to view
                 $this->view('currency/converter', $data);
 
             }
-//            $fromCurrency = $_POST['fromCurrency'];
-//            $toCurrency = $_POST['toCurrency'];
-//            $amount = $_POST['amount'];
 
 //        return $total_format;
         } else {
@@ -89,8 +79,7 @@ class CurrencyController extends BaseController
     }
 
     # Remember .htaccess isn't working so need awkward url with /mvc/public/?url=
-    # http://localhost/mvc/public/?url=pages/about/33
-//    public function about($id)
+    # http://localhost/mvc-currency-converter/public/?url=Currency/about/
     public function about()
     {
         $data = [
@@ -99,6 +88,5 @@ class CurrencyController extends BaseController
             PHP MVC framework. Enjoy!',
         ];
         $this->view('currency/about', $data);
-//        echo "this is about in Pages and the id is ".$id;
     }
 }
